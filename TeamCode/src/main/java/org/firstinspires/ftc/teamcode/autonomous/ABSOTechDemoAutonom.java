@@ -2,11 +2,13 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
+@Disabled
 @Autonomous(group = "drive")
 public class ABSOTechDemoAutonom extends LinearOpMode {
 
@@ -28,7 +30,7 @@ public class ABSOTechDemoAutonom extends LinearOpMode {
                 )
         );
 
-        sleep(500);
+        sleep(400);
 
         drive.setWeightedDrivePower(
                 new Pose2d(
@@ -38,7 +40,7 @@ public class ABSOTechDemoAutonom extends LinearOpMode {
                 )
         );
 
-        sleep(2500);
+        sleep(2650);
 
         drive.setWeightedDrivePower(
                 new Pose2d(

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.drive;
 
 import static java.lang.Math.abs;
 
@@ -22,7 +22,7 @@ public class DcMotorServo {
         this.motor = h.get(DcMotorEx.class, name);
         this.ratio = ratio;
         this.cpr = cpr;
-        //motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //       motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        motor.setTargetPositionTolerance(16);
         motor.setTargetPosition(0);
