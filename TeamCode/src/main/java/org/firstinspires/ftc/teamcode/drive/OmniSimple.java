@@ -6,7 +6,7 @@ public class OmniSimple {
     static float a = 24.f/2;
     static float b = 19.f/2;
 
-    public static double[] calculateAndSet(float Vy, float Vx, float W) {
+    public static double[] calculateAndSet(double Vy, double Vx, double W) {
 
         double W1 = Vx - Vy - (a + b) * W;
         double W2 = Vx + Vy + (a + b) * W;

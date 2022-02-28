@@ -4,8 +4,6 @@ import static java.lang.Math.abs;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -21,8 +19,8 @@ import org.firstinspires.ftc.teamcode.drive.OmniSimple;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 
-@TeleOp(group = "drive", name = "drive")
-public class ABSOTechDemoTeleOp extends LinearOpMode {
+@TeleOp(group = "drive", name = "drive_devel")
+public class ControlDevel extends LinearOpMode {
     int btoi(boolean bool){
         return bool ? 1 : 0;
     }
@@ -50,16 +48,14 @@ public class ABSOTechDemoTeleOp extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         intake2.setDirection(DcMotorSimple.Direction.REVERSE);
-        double coaie_de_cal = 0;
-        int minus = 1;
+        int minus;
 
-        double caruselPower = 0.45;
-        float liftPosition = 0;
-        float cupaPosition = 0;
-        int intake2Pos = 0;
+        double caruselPower = 0.5;
+        float liftPosition;
+        int intake2Pos;
         float transportPosition = 0;
 //        float liftPosition = 0;
-        double pantaPosition = 0.35;
+        double pantaPosition;
         int position = 0;
         int level1 = 450;
         int level2 = 950;
