@@ -60,6 +60,7 @@ public class ControlDevel extends LinearOpMode {
         int level1 = 450;
         int level2 = 950;
         int level3 = 1350;
+        double speed;
         waitForStart();
         ElapsedTime liftTimer = new ElapsedTime();
 
@@ -68,6 +69,9 @@ public class ControlDevel extends LinearOpMode {
         waitForStart();
         liftTimer.reset();
         double lastLiftIncrease = 0;
+        double lastStartPressed = 0;
+        boolean sniperPressed = false;
+        boolean sniperMode = false;
 
         double turetaX = 0.5;
         double turetaY = 0;
@@ -122,7 +126,27 @@ public class ControlDevel extends LinearOpMode {
             //cupaPosition = liftPosition * 1;
             //panta.setPosition(cupaPosition / liftPosition);
             //lift.setAngle(liftPosition,0.5f);
-            double[] vals = OmniSimple.calculateAndSet(-gamepad1.left_stick_x * 15, -gamepad1.left_stick_y * 15, -gamepad1.right_stick_x);
+
+            if(liftTimer.milliseconds() > lastStartPressed){
+                if(gamepad1.start){
+                    if(!sniperPressed){
+                        lastStartPressed = liftTimer.milliseconds() + 20;
+                        sniperPressed = true;
+                        sniperMode = !sniperMode;
+                    }
+                }else {
+                    if(sniperPressed){
+                        lastStartPressed = liftTimer.milliseconds() + 20;
+                        sniperPressed = false;
+                    }
+                }
+            }
+
+            if(sniperMode){
+                speed = 0.5;
+            }else speed = 1;
+
+            double[] vals = OmniSimple.calculateAndSet(-gamepad1.left_stick_x * 20 * speed, -gamepad1.left_stick_y * 20 * speed, -gamepad1.right_stick_x * speed);
 
             drive.leftFront.setVelocity(vals[0], AngleUnit.RADIANS);
             drive.rightFront.setVelocity(vals[1], AngleUnit.RADIANS);
@@ -178,19 +202,19 @@ public class ControlDevel extends LinearOpMode {
 
             if(turetaT < liftTimer.milliseconds()){
                 if(gamepad1.dpad_up){
-                    turetaY = Math.max(0,Math.min(1,turetaY + .05));
+                    turetaY = Math.max(0,Math.min(1,turetaY + .02));
                     turetaT = liftTimer.milliseconds() + 100;
                 }
                 if(gamepad1.dpad_down){
-                    turetaY = Math.max(0,Math.min(1,turetaY - .05));
+                    turetaY = Math.max(0,Math.min(1,turetaY - .02));
                     turetaT = liftTimer.milliseconds() + 100;
                 }
                 if(gamepad1.dpad_right){
-                    turetaX = Math.max(0,Math.min(1,turetaX - .05));
+                    turetaX = Math.max(0,Math.min(1,turetaX - .02));
                     turetaT = liftTimer.milliseconds() + 100;
                 }
                 if(gamepad1.dpad_left){
-                    turetaX = Math.max(0,Math.min(1,turetaX + .05));
+                    turetaX = Math.max(0,Math.min(1,turetaX + .02));
                     turetaT = liftTimer.milliseconds() + 100;
                 }
             }
@@ -208,9 +232,9 @@ public class ControlDevel extends LinearOpMode {
             telemetry.addData("g2 left bumper", gamepad2.left_bumper);
             telemetry.addData("g2 a", gamepad2.a);
             telemetry.addData("g2 b", gamepad2.b);
-            telemetry.addData("intake2", intake2.getCurrentPosition());
+            //telemetry.addData("intake2", intake2.getCurrentPosition());
             telemetry.addData("transportPOS", transportPosition);
-            telemetry.addData("lift position", liftPosition);
+            telemetry.addData("speed", speed);
 
             telemetry.addData("trans position", transportPosition);
             //telemetry.addData("transport pow", transport.getPower());
