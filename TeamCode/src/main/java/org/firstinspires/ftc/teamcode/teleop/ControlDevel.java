@@ -82,13 +82,13 @@ public class ControlDevel extends LinearOpMode {
 
             if(gamepad2.dpad_up && liftTimer.milliseconds() > lastLiftIncrease && position < 3){
                 //liftPosition += 10;
-                lastLiftIncrease = liftTimer.milliseconds() + 300;
+                lastLiftIncrease = liftTimer.milliseconds() + 20;
                 position++;
             }
 
             if(gamepad2.dpad_down && liftTimer.milliseconds() > lastLiftIncrease && position > 0){
                 //liftPosition -= 10;
-                lastLiftIncrease = liftTimer.milliseconds() + 300;
+                lastLiftIncrease = liftTimer.milliseconds() + 20;
                 position--;
             }
 
@@ -110,18 +110,18 @@ public class ControlDevel extends LinearOpMode {
                     break;
             }
 
-            lift.setAngle(-liftPosition,0.2f);
+            lift.setAngle(-liftPosition,0.4f);
 
             telemetry.addData("encoder",lift.motor.getCurrentPosition());
             telemetry.addData("angle",liftPosition);
 
             //panta.setPosition(Math.max(gamepad2.left_stick_y, 0.35));
 
-            pantaPosition = 0.35 + 0.5 * (-lift.motor.getCurrentPosition() - 200) / 400;
+            //pantaPosition = 0.35 + 0.5 * (-lift.motor.getCurrentPosition() - 200) / 400;
 
-            panta.setPosition(Math.min(0.80, Math.max(pantaPosition, 0.35)));
+            //panta.setPosition(Math.min(0.80, Math.max(pantaPosition, 0.35)));
 
-            telemetry.addData("pantaPosition",Math.min(0.85, Math.max(pantaPosition, 0.35)));
+            //telemetry.addData("pantaPosition",Math.min(0.85, Math.max(pantaPosition, 0.35)));
 
             //cupaPosition = liftPosition * 1;
             //panta.setPosition(cupaPosition / liftPosition);
@@ -146,7 +146,7 @@ public class ControlDevel extends LinearOpMode {
                 speed = 0.5;
             }else speed = 1;
 
-            double[] vals = OmniSimple.calculateAndSet(-gamepad1.left_stick_x * 20 * speed, -gamepad1.left_stick_y * 20 * speed, -gamepad1.right_stick_x * speed);
+            double[] vals = OmniSimple.calculateAndSet(gamepad1.left_stick_x * 20 * speed, gamepad1.left_stick_y * 20 * speed, -gamepad1.right_stick_x * speed);
 
             drive.leftFront.setVelocity(vals[0], AngleUnit.RADIANS);
             drive.rightFront.setVelocity(vals[1], AngleUnit.RADIANS);
@@ -164,9 +164,9 @@ public class ControlDevel extends LinearOpMode {
 
             intake.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
 
-            if(gamepad2.dpad_left || gamepad2.dpad_right){
+            if(gamepad2.right_bumper || gamepad2.left_bumper){
                 intake2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                intake2.setPower(btoi(gamepad2.dpad_left) - btoi(gamepad2.dpad_right));
+                intake2.setPower(btoi(gamepad2.right_bumper) - btoi(gamepad2.left_bumper));
             }else{
                 if(intake2.getCurrentPosition() < 0)
                     minus = -1;
@@ -196,7 +196,7 @@ public class ControlDevel extends LinearOpMode {
                 carusel.setPower(-caruselPower);
             else carusel.setPower(0);
 
-            if (gamepad2.left_bumper)
+            if (gamepad2.x)
                 cupa.setPosition(0.75);
             else cupa.setPosition(1);
 
