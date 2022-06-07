@@ -42,6 +42,8 @@ public class DemoDrive extends LinearOpMode {
     boolean dpadUpHold = false;
     boolean dPadDownHold = false;
 
+    float liftSpeed = 0.4f;
+
     ElapsedTime timer = new ElapsedTime();
 
     @Override
@@ -113,6 +115,7 @@ public class DemoDrive extends LinearOpMode {
                     lastLiftIncrease = timer.milliseconds() + 20;
                     dpadUpHold = true;
                     position++;
+                    liftSpeed = 1f;
                 }
             }else if(dpadUpHold){
                 lastLiftIncrease = timer.milliseconds() + 20;
@@ -123,6 +126,7 @@ public class DemoDrive extends LinearOpMode {
                     lastLiftIncrease = timer.milliseconds() + 20;
                     dPadDownHold = true;
                     position--;
+                    liftSpeed = 0.5f;
                 }
             }else if(dPadDownHold){
                 lastLiftIncrease = timer.milliseconds() + 20;
@@ -143,7 +147,7 @@ public class DemoDrive extends LinearOpMode {
                 liftPosition = 0;
                 break;
         }
-        lift.setAngle(-liftPosition,0.4f);
+        lift.setAngle(-liftPosition, liftSpeed);
     }
 
     public void intakes(){
