@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import static java.lang.Math.abs;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -16,7 +19,10 @@ import org.firstinspires.ftc.teamcode.drive.OmniSimple;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 @TeleOp(group = "drive", name = "demo_drive")
+@Config
 public class DemoDrive extends LinearOpMode {
+
+    public static double left_right = 1, back_front = 1;
 
     SampleMecanumDrive drive;
     DcMotorServo lift;
@@ -25,7 +31,7 @@ public class DemoDrive extends LinearOpMode {
     Servo cupa;
 
     double driveSpeed = 1;
-    double lastStartPressed = 0;
+    //double lastStartPressed = 0;
     double lastLiftIncrease = 0;
     double caruselPower = 0.5;
 
@@ -37,7 +43,7 @@ public class DemoDrive extends LinearOpMode {
     int minus;
     int intake2Pos;
 
-    boolean startHold = false;
+    //boolean startHold = false;
     boolean sniperMode = false;
     boolean dpadUpHold = false;
     boolean dPadDownHold = false;
@@ -48,6 +54,8 @@ public class DemoDrive extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         drive = new SampleMecanumDrive(hardwareMap);
         lift = new DcMotorServo(hardwareMap,"intake2",13.79f,28);
@@ -69,6 +77,7 @@ public class DemoDrive extends LinearOpMode {
             movement();
             lift();
             intakes();
+            showTelemetry();
 
             if(gamepad2.a)
                 carusel.setPower(caruselPower);
@@ -77,13 +86,13 @@ public class DemoDrive extends LinearOpMode {
             else carusel.setPower(0);
 
             if (gamepad2.x)
-                cupa.setPosition(0.75);
+                cupa.setPosition(0.80);
             else cupa.setPosition(1);
         }
     }
 
     public void movement(){
-        if(timer.milliseconds() > lastStartPressed){
+        /*if(timer.milliseconds() > lastStartPressed){
             if(gamepad1.start){
                 if(!startHold){
                     lastStartPressed = timer.milliseconds() + 20;
@@ -94,18 +103,34 @@ public class DemoDrive extends LinearOpMode {
                 lastStartPressed = timer.milliseconds() + 20;
                 startHold = false;
             }
-        }
+        }*/
+
+        sniperMode = gamepad1.right_trigger > 0.2;
 
         if(sniperMode){
             driveSpeed = 0.5;
         }else driveSpeed = 1;
 
-        double[] vals = OmniSimple.calculateAndSet(gamepad1.left_stick_x * 20 * driveSpeed, gamepad1.left_stick_y * 20 * driveSpeed, -gamepad1.right_stick_x * driveSpeed);
+        double leftX, leftY, rightX;
 
-        drive.leftFront.setVelocity(vals[0], AngleUnit.RADIANS);
-        drive.rightFront.setVelocity(vals[1], AngleUnit.RADIANS);
-        drive.leftRear.setVelocity(vals[2] * 0.9, AngleUnit.RADIANS);
-        drive.rightRear.setVelocity(vals[3] * 0.9, AngleUnit.RADIANS);
+        if(gamepad1.dpad_left || gamepad1.dpad_right)
+            leftX = -btoi(gamepad1.dpad_left) + btoi(gamepad1.dpad_right);
+        else leftX = gamepad1.left_stick_x;
+
+        if(gamepad1.dpad_down || gamepad1.dpad_up)
+            leftY = btoi(gamepad1.dpad_down) - btoi(gamepad1.dpad_up);
+        else leftY = gamepad1.left_stick_y;
+
+        if(gamepad1.x || gamepad1.b)
+            rightX = -btoi(gamepad1.x) + btoi(gamepad1.b);
+        else rightX = gamepad1.right_stick_x;
+
+        double[] vals = OmniSimple.calculateAndSet(leftX * 20 * driveSpeed, leftY * 20 * driveSpeed, -rightX * driveSpeed);
+
+        drive.leftFront.setVelocity(vals[0] * (back_front) * (2 - left_right), AngleUnit.RADIANS);
+        drive.rightFront.setVelocity(vals[1] * (back_front) * (left_right), AngleUnit.RADIANS);
+        drive.leftRear.setVelocity(vals[2] * (2 - back_front) * (2 - left_right), AngleUnit.RADIANS);
+        drive.rightRear.setVelocity(vals[3] * (2 - back_front) * (left_right), AngleUnit.RADIANS);
     }
 
     public void lift(){
@@ -166,6 +191,14 @@ public class DemoDrive extends LinearOpMode {
             else intake2.setTargetPosition((abs(intake2.getCurrentPosition()) + 376 - intake2Pos) * minus );
             intake2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
+    }
+
+    public void showTelemetry(){
+        telemetry.addData("leftFront", drive.leftFront.getPower());
+        telemetry.addData("rightFront", drive.rightFront.getPower());
+        telemetry.addData("leftRear", drive.leftRear.getPower());
+        telemetry.addData("rightRear", drive.rightRear.getPower());
+        telemetry.update();
     }
 
     int btoi(boolean bool){
