@@ -5,6 +5,7 @@ import static java.lang.Math.abs;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -118,19 +119,27 @@ public class DemoDrive extends LinearOpMode {
         else leftX = gamepad1.left_stick_x;
 
         if(gamepad1.dpad_down || gamepad1.dpad_up)
-            leftY = btoi(gamepad1.dpad_down) - btoi(gamepad1.dpad_up);
-        else leftY = gamepad1.left_stick_y;
+            leftY = -btoi(gamepad1.dpad_down) + btoi(gamepad1.dpad_up);
+        else leftY = -gamepad1.left_stick_y;
 
         if(gamepad1.x || gamepad1.b)
             rightX = -btoi(gamepad1.x) + btoi(gamepad1.b);
         else rightX = gamepad1.right_stick_x;
 
-        double[] vals = OmniSimple.calculateAndSet(leftX * 20 * driveSpeed, leftY * 20 * driveSpeed, -rightX * driveSpeed);
+        /*double[] vals = OmniSimple.calculateAndSet(leftX * 20 * driveSpeed, leftY * 20 * driveSpeed, -rightX * driveSpeed);
 
         drive.leftFront.setVelocity(vals[0] * (back_front) * (2 - left_right), AngleUnit.RADIANS);
         drive.rightFront.setVelocity(vals[1] * (back_front) * (left_right), AngleUnit.RADIANS);
         drive.leftRear.setVelocity(vals[2] * (2 - back_front) * (2 - left_right), AngleUnit.RADIANS);
-        drive.rightRear.setVelocity(vals[3] * (2 - back_front) * (left_right), AngleUnit.RADIANS);
+        drive.rightRear.setVelocity(vals[3] * (2 - back_front) * (left_right), AngleUnit.RADIANS);*/
+
+        drive.setWeightedDrivePower(
+                new Pose2d(
+                        -leftY * driveSpeed,  //left_stick_y
+                        leftX * driveSpeed,  //left_stick_x
+                        -rightX * driveSpeed  //right_stick_x
+                )
+        );
     }
 
     public void lift(){
@@ -194,6 +203,9 @@ public class DemoDrive extends LinearOpMode {
     }
 
     public void showTelemetry(){
+        telemetry.addData("gamepad1.left_stick_x", gamepad1.left_stick_x);
+        telemetry.addData("gamepad1.left_stick_y", gamepad1.left_stick_y);
+        telemetry.addData("gamepad1.right_stick_x", gamepad1.right_stick_x);
         telemetry.addData("leftFront", drive.leftFront.getPower());
         telemetry.addData("rightFront", drive.rightFront.getPower());
         telemetry.addData("leftRear", drive.leftRear.getPower());
