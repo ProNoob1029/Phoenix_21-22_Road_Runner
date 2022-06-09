@@ -141,9 +141,9 @@ public class DemoDrive extends LinearOpMode {
 
         drive.setWeightedDrivePower(
                 new Pose2d(
-                        -leftY * driveSpeed,  //left_stick_y
-                        leftX * driveSpeed,  //left_stick_x
-                        -rightX * driveSpeed  //right_stick_x
+                        leftY * driveSpeed,  //left_stick_y
+                        -leftX * driveSpeed,  //left_stick_x
+                        rightX * driveSpeed  //right_stick_x
                 )
         );
     }
