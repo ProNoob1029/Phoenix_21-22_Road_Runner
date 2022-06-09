@@ -46,6 +46,7 @@ public class DemoDrive extends LinearOpMode {
 
     //boolean startHold = false;
     boolean sniperMode = false;
+    boolean ultraSniperMode = false;
     boolean dpadUpHold = false;
     boolean dPadDownHold = false;
 
@@ -108,9 +109,14 @@ public class DemoDrive extends LinearOpMode {
 
         sniperMode = gamepad1.right_trigger > 0.2;
 
+        ultraSniperMode = gamepad1.left_trigger > 0.2;
+
         if(sniperMode){
             driveSpeed = 0.5;
         }else driveSpeed = 1;
+
+        if(ultraSniperMode)
+            driveSpeed = 0.25;
 
         double leftX, leftY, rightX;
 
